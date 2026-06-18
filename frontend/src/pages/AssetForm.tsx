@@ -9,6 +9,7 @@ export default function AssetForm() {
   const { id } = useParams<{ id: string }>()
   const isEdit = Boolean(id)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const uploadPromiseRef = useRef<Promise<string> | null>(null)
 
   const [name, setName] = useState('')
   const [classification, setClassification] = useState<'jewelry' | 'gold_bar'>('jewelry')
@@ -53,8 +54,10 @@ export default function AssetForm() {
     setPhotoPath(null)
     setUploadStatus('uploading')
     setError('')
+    const promise = uploadPhoto(file)
+    uploadPromiseRef.current = promise
     try {
-      const path = await uploadPhoto(file)
+      const path = await promise
       setPhotoPath(path)
       setUploadStatus('idle')
     } catch {
@@ -66,6 +69,17 @@ export default function AssetForm() {
     e.preventDefault()
     setSubmitting(true)
     try {
+      let finalPhotoPath = photoPath
+      if (uploadStatus === 'uploading' && uploadPromiseRef.current) {
+        try {
+          finalPhotoPath = await uploadPromiseRef.current
+          setPhotoPath(finalPhotoPath)
+          setUploadStatus('idle')
+        } catch {
+          setUploadStatus('failed')
+        }
+      }
+
       const form = new FormData()
       form.append('name', name)
       form.append('classification', classification)
@@ -75,8 +89,8 @@ export default function AssetForm() {
       form.append('purchase_price', String(Number(purchasePrice)))
       form.append('purchase_date', purchaseDate)
       form.append('notes', notes)
-      if (photoPath) {
-        form.append('photo_path', photoPath)
+      if (finalPhotoPath) {
+        form.append('photo_path', finalPhotoPath)
       } else if (photo) {
         form.append('photo', photo)
       }

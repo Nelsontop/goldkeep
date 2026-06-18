@@ -57,7 +57,7 @@ def daily_fetch():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    scheduler.add_job(daily_fetch, 'cron', hour=9, minute=30)
+    scheduler.add_job(daily_fetch, 'interval', hours=1)
     scheduler.start()
     yield
     scheduler.shutdown()

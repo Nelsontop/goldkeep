@@ -1,17 +1,8 @@
-import { useState, useEffect } from 'react'
 import GoldChart from '../components/GoldChart'
-import { fetchGoldPrices, type GoldPriceItem } from '../api/goldPrice'
+import { useGoldPrices } from '../hooks/useData'
 
 export default function Trend() {
-  const [prices, setPrices] = useState<GoldPriceItem[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    fetchGoldPrices().then(p => {
-      setPrices(p)
-      setLoading(false)
-    })
-  }, [])
+  const { prices, loading } = useGoldPrices()
 
   if (loading) {
     return <div className="px-4 py-12 text-center text-sm text-stone-400">加载中...</div>

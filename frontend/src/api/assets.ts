@@ -1,38 +1,55 @@
-import { apiGet, apiPost, apiPut, apiDelete } from './client'
+import { apiPost, apiPut, apiDelete, apiGet } from './client'
+import {
+  type AssetItem,
+  getCachedAssets,
+  setCachedAssets,
+  addToAssetsCache,
+  updateInAssetsCache,
+  removeFromAssetsCache,
+} from './cache'
 
-export interface AssetItem {
-  id: number
-  name: string
-  classification: 'jewelry' | 'gold_bar'
-  subtype: string | null
-  weight: number
-  purchase_price_per_gram: number
-  purchase_price: number
-  purchase_date: string
-  photo: string | null
-  notes: string
-  created_at: string
-}
+export type { AssetItem }
 
 export async function fetchAssets(classification?: string | null) {
+  const cached = getCachedAssets()
+  if (cached) {
+    if (classification) return cached.filter(a => a.classification === classification)
+    return cached
+  }
   const params = classification ? `?classification=${classification}` : ''
-  return apiGet<AssetItem[]>(`/assets${params}`)
+  const data = await apiGet<AssetItem[]>(`/assets${params}`)
+  if (!classification) {
+    setCachedAssets(data)
+  }
+  return data
 }
 
 export async function fetchAsset(id: number) {
-  return apiGet<AssetItem>(`/assets/${id}`)
+  const cached = getCachedAssets()
+  if (cached) {
+    const found = cached.find(a => a.id === id)
+    if (found) return found
+  }
+  const data = await apiGet<AssetItem>(`/assets/${id}`)
+  addToAssetsCache(data)
+  return data
 }
 
 export async function createAsset(data: FormData) {
-  return apiPost<AssetItem>('/assets', data)
+  const asset = await apiPost<AssetItem>('/assets', data)
+  addToAssetsCache(asset)
+  return asset
 }
 
 export async function updateAsset(id: number, data: FormData) {
-  return apiPut<AssetItem>(`/assets/${id}`, data)
+  const asset = await apiPut<AssetItem>(`/assets/${id}`, data)
+  updateInAssetsCache(id, asset)
+  return asset
 }
 
 export async function deleteAsset(id: number) {
-  return apiDelete(`/assets/${id}`)
+  await apiDelete(`/assets/${id}`)
+  removeFromAssetsCache(id)
 }
 
 export async function uploadPhoto(file: File): Promise<string> {

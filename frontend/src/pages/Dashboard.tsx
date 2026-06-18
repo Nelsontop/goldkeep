@@ -1,9 +1,8 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import AssetCard from '../components/AssetCard'
 import SummaryCards from '../components/SummaryCards'
-import { fetchAssets, type AssetItem } from '../api/assets'
-import { fetchLatestPrice } from '../api/goldPrice'
+import { useAssets, useLatestPrice } from '../hooks/useData'
 
 type FilterKey = 'all' | 'jewelry' | 'gold_bar'
 
@@ -15,21 +14,8 @@ const filters: { key: FilterKey; label: string }[] = [
 
 export default function Dashboard() {
   const [filter, setFilter] = useState<FilterKey>('all')
-  const [allAssets, setAllAssets] = useState<AssetItem[]>([])
-  const [latestPrice, setLatestPrice] = useState(0)
-  const [loading, setLoading] = useState(true)
-
-  const load = useCallback(async () => {
-    const [assets, lp] = await Promise.all([
-      fetchAssets(),
-      fetchLatestPrice(),
-    ])
-    setAllAssets(assets)
-    setLatestPrice(lp.price)
-    setLoading(false)
-  }, [])
-
-  useEffect(() => { load() }, [load])
+  const { assets: allAssets, loading } = useAssets()
+  const { latestPrice } = useLatestPrice()
 
   const filteredAssets = filter === 'all'
     ? allAssets

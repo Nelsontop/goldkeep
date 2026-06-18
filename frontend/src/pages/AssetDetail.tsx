@@ -1,25 +1,16 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { fetchAsset, deleteAsset, type AssetItem } from '../api/assets'
-import { fetchLatestPrice } from '../api/goldPrice'
+import { deleteAsset } from '../api/assets'
+import { useAsset, useLatestPrice } from '../hooks/useData'
 
 const classLabel: Record<string, string> = { jewelry: '首饰', gold_bar: '金条' }
 
 export default function AssetDetail() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const [asset, setAsset] = useState<AssetItem | null>(null)
-  const [latestPrice, setLatestPrice] = useState(0)
-  const [loading, setLoading] = useState(true)
+  const { asset, loading } = useAsset(Number(id))
+  const { latestPrice } = useLatestPrice()
   const [lightbox, setLightbox] = useState(false)
-
-  useEffect(() => {
-    Promise.all([fetchAsset(Number(id)), fetchLatestPrice()]).then(([a, lp]) => {
-      setAsset(a)
-      setLatestPrice(lp.price)
-      setLoading(false)
-    })
-  }, [id])
 
   const handleDelete = async () => {
     if (!confirm('确定删除该资产？')) return
