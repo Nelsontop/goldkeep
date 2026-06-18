@@ -159,7 +159,7 @@ Docker Compose 环境变量：
 |---|---|---|
 | `DATABASE_URL` | `sqlite:////app/data/goldkeep.db` | 数据库连接地址 |
 | `UPLOAD_DIR` | `/app/uploads` | 照片上传目录 |
-| `INITIAL_PASSWORD` | `lina` | 初始登录密码 |
+| `INITIAL_PASSWORD` | `f452cbe6326b14f5` | 初始登录密码 |
 
 ## 设计边界
 

@@ -9,7 +9,7 @@ services:
     environment:
       - DATABASE_URL=sqlite:////app/data/goldkeep.db
       - UPLOAD_DIR=/app/uploads
-      - INITIAL_PASSWORD=lina
+      - INITIAL_PASSWORD=f452cbe6326b14f5
     restart: unless-stopped
 
   frontend:
