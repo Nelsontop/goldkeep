@@ -44,7 +44,7 @@ docker compose up -d
 - `goldkeep_data` — SQLite 数据库文件
 - `goldkeep_uploads` — 资产照片
 
-初始密码通过环境变量 `INITIAL_PASSWORD` 设置（默认 `lina`），首次启动自动创建。
+初始密码通过环境变量 `INITIAL_PASSWORD` 设置（默认 `f452cbe6326b14f5`），首次启动自动创建。
 
 ### 本地开发
 
