@@ -11,6 +11,7 @@ export default function AssetDetail() {
   const [asset, setAsset] = useState<AssetItem | null>(null)
   const [latestPrice, setLatestPrice] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [lightbox, setLightbox] = useState(false)
 
   useEffect(() => {
     Promise.all([fetchAsset(Number(id)), fetchLatestPrice()]).then(([a, lp]) => {
@@ -61,13 +62,38 @@ export default function AssetDetail() {
         </Link>
       </div>
 
-      <div className="flex items-center justify-center rounded-xl bg-gold-100 py-12 text-6xl">
-        {asset.photo ? (
+      {asset.photo ? (
+        <div
+          className="flex items-center justify-center rounded-xl bg-gold-100 py-12 cursor-pointer active:bg-gold-200"
+          onClick={() => setLightbox(true)}
+        >
           <img src={asset.photo} alt="" className="max-h-64 rounded-xl object-cover" />
-        ) : (
-          '🏆'
-        )}
-      </div>
+        </div>
+      ) : (
+        <div className="flex items-center justify-center rounded-xl bg-gold-100 py-12 text-6xl">
+          🏆
+        </div>
+      )}
+
+      {lightbox && (
+        <div
+          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
+          onClick={() => setLightbox(false)}
+        >
+          <button
+            className="absolute top-4 right-4 size-10 flex items-center justify-center rounded-full bg-white/20 text-white text-xl active:bg-white/30"
+            onClick={() => setLightbox(false)}
+          >
+            ✕
+          </button>
+          <img
+            src={asset.photo!}
+            alt=""
+            className="max-h-full max-w-full object-contain"
+            onClick={e => e.stopPropagation()}
+          />
+        </div>
+      )}
 
       <div className="rounded-xl bg-white p-4 shadow-sm space-y-3">
         <h3 className="text-lg font-bold text-stone-800">{asset.name}</h3>
