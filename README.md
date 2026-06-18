@@ -54,10 +54,10 @@ docker compose up -d
 cd backend
 python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
+uvicorn app.main:app --reload --port 19090
 ```
 
-后端运行在 `http://localhost:8000`，Swagger 文档在 `http://localhost:8000/docs`。
+后端运行在 `http://localhost:19090`，Swagger 文档在 `http://localhost:19090/docs`。
 
 **前端：**
 

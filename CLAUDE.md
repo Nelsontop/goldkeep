@@ -15,9 +15,9 @@ Frontend on `:80`, backend on `:8000`. Data in named volumes (`goldkeep_data`, `
 cd backend
 python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
+uvicorn app.main:app --reload --port 19090
 ```
-Swagger at `http://localhost:8000/docs`.
+Swagger at `http://localhost:19090/docs`.
 
 **Frontend dev:**
 ```bash
