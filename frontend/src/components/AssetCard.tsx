@@ -14,6 +14,7 @@ function formatTag(asset: AssetItem, filter: string) {
 
 export default function AssetCard({ asset, latestPrice, filter = 'all' }: { asset: AssetItem; latestPrice: number; filter?: string }) {
   const holdingValue = asset.weight * latestPrice
+  const profit = asset.weight * (latestPrice - asset.purchase_price_per_gram)
 
   return (
     <Link
@@ -50,6 +51,9 @@ export default function AssetCard({ asset, latestPrice, filter = 'all' }: { asse
           ¥{holdingValue.toLocaleString('zh-CN', { maximumFractionDigits: 0 })}
         </div>
         <div className="text-xs text-stone-400">持有价值</div>
+        <div className={`text-xs font-medium ${profit >= 0 ? 'text-red-500' : 'text-green-600'}`}>
+          {profit >= 0 ? '+' : ''}¥{profit.toLocaleString('zh-CN', { maximumFractionDigits: 0 })}
+        </div>
       </div>
     </Link>
   )
