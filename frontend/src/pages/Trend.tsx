@@ -1,18 +1,14 @@
 import { useState, useEffect } from 'react'
 import GoldChart from '../components/GoldChart'
-import SummaryCards from '../components/SummaryCards'
 import { fetchGoldPrices, type GoldPriceItem } from '../api/goldPrice'
-import { fetchAssets, type AssetItem } from '../api/assets'
 
 export default function Trend() {
   const [prices, setPrices] = useState<GoldPriceItem[]>([])
-  const [assets, setAssets] = useState<AssetItem[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    Promise.all([fetchGoldPrices(), fetchAssets()]).then(([p, a]) => {
+    fetchGoldPrices().then(p => {
       setPrices(p)
-      setAssets(a)
       setLoading(false)
     })
   }, [])
@@ -21,10 +17,18 @@ export default function Trend() {
     return <div className="px-4 py-12 text-center text-sm text-stone-400">加载中...</div>
   }
 
+  const latestPrice = prices[prices.length - 1]?.price || 0
+
   return (
-    <div className="space-y-4 px-4 py-4">
+    <div className="px-4 py-4 space-y-4">
+      <div className="rounded-xl bg-white p-4 shadow-sm">
+        <div className="text-xs text-stone-400">今日金价</div>
+        <div className="mt-1 text-xl font-bold text-gold-600">
+          ¥{latestPrice}/g
+        </div>
+        <div className="mt-0.5 text-xs text-stone-400">人民币/克</div>
+      </div>
       <GoldChart prices={prices} />
-      <SummaryCards assets={assets} latestPrice={prices[prices.length - 1]?.price || 0} />
     </div>
   )
 }

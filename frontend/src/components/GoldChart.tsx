@@ -16,7 +16,7 @@ export default function GoldChart({ prices }: { prices: GoldPriceItem[] }) {
         <h2 className="text-sm font-semibold text-stone-700">黄金走势 · 近90日</h2>
         <span className="text-xs text-stone-400">人民币/克</span>
       </div>
-      <div className="h-48 w-full">
+      <div className="w-full" style={{ height: 'calc(100vh - 280px)' }}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={prices} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
