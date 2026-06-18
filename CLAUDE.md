@@ -23,7 +23,7 @@ Swagger at `http://localhost:8000/docs`.
 ```bash
 cd frontend
 npm install
-npm run dev        # Vite dev server on :5173, proxies /api → :19090
+npm run dev        # Vite dev server on :5173, proxies /api → :8000
 npm run build      # tsc -b && vite build → dist/
 npm run lint       # eslint (TypeScript + React hooks rules)
 ```
@@ -69,3 +69,4 @@ All asset endpoints use `multipart/form-data` (not JSON) — `Form(...)` params 
 - Domain language from `CONTEXT.md`: 黄金资产 (Gold Asset), Classification (首饰 Jewelry / 金条 Gold Bar), Subtype, Weight (克), Purchase Price Per Gram (下单克价), Purchase Price (买入总价), Holding Value (Weight × latest price), Gold Price.
 - No purity/karat, no workmanship fee tracking, single-user, daily price granularity.
 - All UI text in Chinese.
+- **每次 push 之后必须同步更新 README.md**，确保 README 反映项目当前状态。
