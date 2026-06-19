@@ -19,14 +19,14 @@ export default function AssetDetail() {
   }
 
   if (loading) {
-    return <div className="px-4 py-12 text-center text-sm text-stone-400">加载中...</div>
+    return <div className="px-4 py-12 text-center text-sm text-muted">加载中...</div>
   }
 
   if (!asset) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
-        <p className="text-stone-400">资产不存在</p>
-        <Link to="/" className="mt-2 text-sm text-gold-500">返回首页</Link>
+        <p className="text-muted">资产不存在</p>
+        <Link to="/" className="mt-2 text-sm text-gold-400">返回首页</Link>
       </div>
     )
   }
@@ -40,14 +40,14 @@ export default function AssetDetail() {
   return (
     <div className="space-y-4 px-4 py-4">
       <div className="flex items-center gap-3">
-        <button onClick={() => navigate(-1)} className="text-stone-400 active:text-stone-600">
+        <button onClick={() => navigate(-1)} className="text-muted active:text-body">
           ← 返回
         </button>
-        <h2 className="text-lg font-semibold text-stone-800">资产详情</h2>
+        <h2 className="text-lg font-semibold text-body">资产详情</h2>
         <div className="flex-1" />
         <Link
           to={`/assets/${asset.id}/edit`}
-          className="rounded-lg bg-stone-100 px-3 py-1.5 text-xs font-medium text-stone-600 active:bg-stone-200"
+          className="rounded-lg bg-surface-card-dark px-3 py-1.5 text-xs font-medium text-muted active:bg-surface-elevated-dark"
         >
           编辑
         </Link>
@@ -55,13 +55,13 @@ export default function AssetDetail() {
 
       {asset.photo ? (
         <div
-          className="flex items-center justify-center rounded-xl bg-gold-100 py-12 cursor-pointer active:bg-gold-200"
+          className="flex items-center justify-center rounded-xl bg-gold-100/10 py-12 cursor-pointer active:bg-gold-100/20"
           onClick={() => setLightbox(true)}
         >
-          <img src={asset.photo} alt="" className="max-h-64 rounded-xl object-cover" />
+          <img src={asset.photo} alt="" className="max-h-64 rounded-xl object-cover ring-1 ring-hairline-on-dark" />
         </div>
       ) : (
-        <div className="flex items-center justify-center rounded-xl bg-gold-100 py-12 text-6xl">
+        <div className="flex items-center justify-center rounded-xl bg-gold-100/10 py-12 text-6xl">
           🏆
         </div>
       )}
@@ -72,7 +72,7 @@ export default function AssetDetail() {
           onClick={() => setLightbox(false)}
         >
           <button
-            className="absolute top-4 right-4 size-10 flex items-center justify-center rounded-full bg-white/20 text-white text-xl active:bg-white/30"
+            className="absolute top-4 right-4 size-10 flex items-center justify-center rounded-full bg-surface-card-dark text-body text-xl active:bg-surface-elevated-dark"
             onClick={() => setLightbox(false)}
           >
             ✕
@@ -80,62 +80,62 @@ export default function AssetDetail() {
           <img
             src={asset.photo!}
             alt=""
-            className="max-h-full max-w-full object-contain"
+            className="max-h-full max-w-full object-contain ring-1 ring-hairline-on-dark"
             onClick={e => e.stopPropagation()}
           />
         </div>
       )}
 
-      <div className="rounded-xl bg-white p-4 shadow-sm space-y-3">
-        <h3 className="text-lg font-bold text-stone-800">{asset.name}</h3>
+      <div className="rounded-xl bg-surface-card-dark p-4 space-y-3">
+        <h3 className="text-lg font-bold text-body">{asset.name}</h3>
         <div className="flex items-center gap-2">
-          <span className="rounded bg-amber-50 px-2 py-0.5 text-xs text-amber-700">
+          <span className="rounded bg-amber-500/10 px-2 py-0.5 text-xs text-amber-300">
             {asset.subtype ? `${classLabel[asset.classification]} · ${asset.subtype}` : classLabel[asset.classification]}
           </span>
         </div>
         <div className="grid grid-cols-2 gap-y-3 text-sm">
           <div>
-            <span className="text-stone-400">克重</span>
-            <p className="font-semibold text-stone-800">{asset.weight}g</p>
+            <span className="text-muted">克重</span>
+            <p className="font-semibold text-body">{asset.weight}g</p>
           </div>
           <div>
-            <span className="text-stone-400">下单克价</span>
-            <p className="font-semibold text-stone-800">¥{asset.purchase_price_per_gram}/g</p>
+            <span className="text-muted">下单克价</span>
+            <p className="font-semibold text-body">¥{asset.purchase_price_per_gram}/g</p>
           </div>
           <div>
-            <span className="text-stone-400">买入总价</span>
-            <p className="font-semibold text-stone-800">¥{asset.purchase_price.toLocaleString()}</p>
+            <span className="text-muted">买入总价</span>
+            <p className="font-semibold text-body">¥{asset.purchase_price.toLocaleString()}</p>
           </div>
           <div>
-            <span className="text-stone-400">买入日期</span>
-            <p className="font-semibold text-stone-800">{asset.purchase_date}</p>
+            <span className="text-muted">买入日期</span>
+            <p className="font-semibold text-body">{asset.purchase_date}</p>
           </div>
           <div>
-            <span className="text-stone-400">持有价值</span>
-            <p className="font-semibold text-gold-600">
+            <span className="text-muted">持有价值</span>
+            <p className="font-semibold text-gold-400">
               ¥{holdingValue.toLocaleString('zh-CN', { maximumFractionDigits: 0 })}
             </p>
           </div>
         </div>
-        <div className="border-t border-stone-100 pt-3">
+        <div className="border-t border-hairline-on-dark pt-3">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-stone-400">盈亏（按克价差）</span>
-            <span className={`font-semibold ${profit >= 0 ? 'text-red-500' : 'text-green-600'}`}>
+            <span className="text-muted">盈亏（按克价差）</span>
+            <span className={`font-semibold ${profit >= 0 ? 'text-trading-down' : 'text-trading-up'}`}>
               {profit >= 0 ? '+' : ''}¥{profit.toLocaleString('zh-CN', { maximumFractionDigits: 0 })} ({profitPercent}%)
             </span>
           </div>
         </div>
         {asset.notes && (
-          <div className="border-t border-stone-100 pt-3">
-            <span className="text-xs text-stone-400">备注</span>
-            <p className="mt-1 text-sm text-stone-600">{asset.notes}</p>
+          <div className="border-t border-hairline-on-dark pt-3">
+            <span className="text-xs text-muted">备注</span>
+            <p className="mt-1 text-sm text-muted">{asset.notes}</p>
           </div>
         )}
       </div>
 
       <button
         onClick={handleDelete}
-        className="w-full rounded-xl bg-red-50 py-3 text-sm font-medium text-red-500 active:bg-red-100"
+        className="w-full rounded-xl bg-trading-down/10 py-3 text-sm font-medium text-trading-down active:bg-trading-down/20"
       >
         删除资产
       </button>

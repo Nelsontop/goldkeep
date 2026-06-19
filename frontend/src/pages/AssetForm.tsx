@@ -113,36 +113,38 @@ export default function AssetForm() {
     : photoPath || existingPhoto
 
   let photoOverlay: string | null = null
-  if (uploadStatus === 'uploading') photoOverlay = 'animate-pulse bg-white/30'
-  if (uploadStatus === 'failed') photoOverlay = 'bg-red-400/30'
+  if (uploadStatus === 'uploading') photoOverlay = 'animate-pulse bg-white/10'
+  if (uploadStatus === 'failed') photoOverlay = 'bg-trading-down/30'
+
+  const inputClass = 'w-full rounded-lg border border-hairline-on-dark bg-surface-card-dark px-3 py-2.5 text-sm text-body outline-none placeholder:text-muted focus:border-gold-400 focus:ring-1 focus:ring-gold-400'
 
   return (
     <div className="px-4 py-4">
       <div className="mb-4 flex items-center gap-3">
-        <button onClick={() => navigate(-1)} className="text-stone-400 active:text-stone-600">
+        <button onClick={() => navigate(-1)} className="text-muted active:text-body">
           ← 返回
         </button>
-        <h2 className="text-lg font-semibold text-stone-800">
+        <h2 className="text-lg font-semibold text-body">
           {isEdit ? '编辑资产' : '添加资产'}
         </h2>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div
-          className="flex flex-col items-center gap-2 rounded-xl bg-white p-6 shadow-sm active:bg-stone-50"
+          className="flex flex-col items-center gap-2 rounded-xl bg-surface-card-dark p-6 active:bg-surface-elevated-dark"
           onClick={() => fileInputRef.current?.click()}
         >
           {photoSrc ? (
-            <div className="relative flex size-20 items-center justify-center rounded-xl bg-gold-100 text-3xl overflow-hidden">
-              <img src={photoSrc} alt="" className="size-20 object-cover" />
+            <div className="relative flex size-20 items-center justify-center rounded-xl bg-gold-100/10 text-3xl overflow-hidden">
+              <img src={photoSrc} alt="" className="size-20 rounded-xl object-cover ring-1 ring-hairline-on-dark" />
               {photoOverlay && (
                 <div className={`absolute inset-0 ${photoOverlay}`} />
               )}
             </div>
           ) : (
-            <div className="flex size-20 items-center justify-center rounded-xl bg-gold-100 text-3xl">📷</div>
+            <div className="flex size-20 items-center justify-center rounded-xl bg-gold-100/10 text-3xl">📷</div>
           )}
-          <p className="text-xs text-stone-400">
+          <p className="text-xs text-muted">
             {!photoSrc ? '点击上传图片' : '点击更换图片'}
           </p>
           <input
@@ -154,29 +156,29 @@ export default function AssetForm() {
           />
         </div>
 
-        <div className="rounded-xl bg-white p-4 shadow-sm space-y-4">
+        <div className="rounded-xl bg-surface-card-dark p-4 space-y-4">
           <div>
-            <label className="mb-1 block text-sm font-medium text-stone-600">名称</label>
+            <label className="mb-1 block text-xs font-medium text-muted">名称</label>
             <input
               type="text"
               value={name}
               onChange={e => setName(e.target.value)}
               placeholder="例如：老凤祥手镯"
               required
-              className="w-full rounded-lg border border-stone-200 px-3 py-2.5 text-sm outline-none focus:border-gold-400 focus:ring-1 focus:ring-gold-400"
+              className={inputClass}
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-stone-600">分类</label>
+            <label className="mb-1 block text-xs font-medium text-muted">分类</label>
             <div className="flex gap-2">
               <button
                 type="button"
                 onClick={() => { setClassification('jewelry'); setSubtype('') }}
                 className={`flex-1 rounded-lg py-2.5 text-sm font-medium transition-colors ${
                   classification === 'jewelry'
-                    ? 'bg-gold-100 text-gold-700 ring-1 ring-gold-400'
-                    : 'bg-stone-50 text-stone-500'
+                    ? 'bg-gold-400 text-on-primary'
+                    : 'bg-surface-elevated-dark text-muted'
                 }`}
               >
                 首饰
@@ -186,8 +188,8 @@ export default function AssetForm() {
                 onClick={() => { setClassification('gold_bar'); setSubtype('') }}
                 className={`flex-1 rounded-lg py-2.5 text-sm font-medium transition-colors ${
                   classification === 'gold_bar'
-                    ? 'bg-gold-100 text-gold-700 ring-1 ring-gold-400'
-                    : 'bg-stone-50 text-stone-500'
+                    ? 'bg-gold-400 text-on-primary'
+                    : 'bg-surface-elevated-dark text-muted'
                 }`}
               >
                 金条
@@ -197,7 +199,7 @@ export default function AssetForm() {
 
           {classification === 'jewelry' && (
             <div>
-              <label className="mb-1 block text-sm font-medium text-stone-600">首饰类型</label>
+              <label className="mb-1 block text-xs font-medium text-muted">首饰类型</label>
               <div className="flex flex-wrap gap-2">
                 {JEWELRY_SUBTYPES.map(s => (
                   <button
@@ -206,8 +208,8 @@ export default function AssetForm() {
                     onClick={() => setSubtype(s)}
                     className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
                       subtype === s
-                        ? 'bg-gold-500 text-white'
-                        : 'bg-stone-50 text-stone-500 active:bg-stone-100'
+                        ? 'bg-gold-400 text-on-primary'
+                        : 'bg-surface-elevated-dark text-muted active:bg-surface-card-dark'
                     }`}
                   >
                     {s}
@@ -218,7 +220,7 @@ export default function AssetForm() {
           )}
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-stone-600">克重 (g)</label>
+            <label className="mb-1 block text-xs font-medium text-muted">克重 (g)</label>
             <input
               type="number"
               step="0.01"
@@ -227,12 +229,12 @@ export default function AssetForm() {
               onChange={e => setWeight(e.target.value)}
               placeholder="0.00"
               required
-              className="w-full rounded-lg border border-stone-200 px-3 py-2.5 text-sm outline-none focus:border-gold-400 focus:ring-1 focus:ring-gold-400"
+              className={inputClass}
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-stone-600">下单克价 (¥/g)</label>
+            <label className="mb-1 block text-xs font-medium text-muted">下单克价 (¥/g)</label>
             <input
               type="number"
               step="0.01"
@@ -245,12 +247,12 @@ export default function AssetForm() {
               }}
               placeholder="0.00"
               required
-              className="w-full rounded-lg border border-stone-200 px-3 py-2.5 text-sm outline-none focus:border-gold-400 focus:ring-1 focus:ring-gold-400"
+              className={inputClass}
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-stone-600">买入总价 (¥)</label>
+            <label className="mb-1 block text-xs font-medium text-muted">买入总价 (¥)</label>
             <input
               type="number"
               step="0.01"
@@ -263,47 +265,47 @@ export default function AssetForm() {
               }}
               placeholder="0.00"
               required
-              className="w-full rounded-lg border border-stone-200 px-3 py-2.5 text-sm outline-none focus:border-gold-400 focus:ring-1 focus:ring-gold-400"
+              className={inputClass}
             />
           </div>
 
           {w > 0 && ppg > 0 && (
-            <div className="rounded-lg bg-gold-50 p-3 text-center text-xs text-stone-400">
+            <div className="rounded-lg bg-gold-400/10 p-3 text-center text-xs text-muted">
               {lastEdited === 'perGram' ? '已根据克价自动计算总价' : '已根据总价自动计算克价'}
             </div>
           )}
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-stone-600">买入日期</label>
+            <label className="mb-1 block text-xs font-medium text-muted">买入日期</label>
             <input
               type="date"
               value={purchaseDate}
               onChange={e => setPurchaseDate(e.target.value)}
               required
-              className="w-full rounded-lg border border-stone-200 px-3 py-2.5 text-sm outline-none focus:border-gold-400 focus:ring-1 focus:ring-gold-400"
+              className={inputClass}
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-stone-600">备注</label>
+            <label className="mb-1 block text-xs font-medium text-muted">备注</label>
             <textarea
               value={notes}
               onChange={e => setNotes(e.target.value)}
               placeholder="选填"
               rows={2}
-              className="w-full rounded-lg border border-stone-200 px-3 py-2.5 text-sm outline-none focus:border-gold-400 focus:ring-1 focus:ring-gold-400 resize-none"
+              className={`${inputClass} resize-none`}
             />
           </div>
         </div>
 
         {error && (
-          <p className="rounded-lg bg-red-50 px-3 py-2 text-center text-xs text-red-500">{error}</p>
+          <p className="rounded-lg bg-trading-down/10 px-3 py-2 text-center text-xs text-trading-down">{error}</p>
         )}
         <button
           type="submit"
           disabled={submitting || saveSuccess}
-          className={`w-full rounded-xl py-3 text-sm font-semibold text-white transition-colors disabled:opacity-50 ${
-            saveSuccess ? 'bg-green-500' : 'bg-gold-500 active:bg-gold-600'
+          className={`w-full rounded-md py-3 text-sm font-semibold transition-colors disabled:opacity-50 ${
+            saveSuccess ? 'bg-trading-up text-on-dark' : 'bg-gold-400 text-on-primary active:bg-gold-500'
           }`}
         >
           {saveSuccess ? '✓ 保存成功' : submitting ? '保存中...' : isEdit ? '保存修改' : '添加资产'}

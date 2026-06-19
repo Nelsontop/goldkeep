@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @theme {
+  /* Brand gold (kept from original) */
   --color-gold-50: #fffbeb;
   --color-gold-100: #fef3c7;
   --color-gold-200: #fde68a;
@@ -11,12 +12,28 @@
   --color-gold-700: #b45309;
   --color-gold-800: #92400e;
   --color-gold-900: #78350f;
+
+  /* DESIGN.md Binance dark theme */
+  --color-canvas-dark: #0b0e11;
+  --color-surface-card-dark: #1e2329;
+  --color-surface-elevated-dark: #2b3139;
+  --color-hairline-on-dark: #2b3139;
+  --color-body: #eaecef;
+  --color-muted: #707a8a;
+  --color-muted-strong: #929aa5;
+  --color-on-dark: #ffffff;
+  --color-on-primary: #181a20;
+  --color-trading-up: #0ecb81;
+  --color-trading-down: #f6465d;
+  --color-info: #3b82f6;
+  --color-info-ring: #3b82f6;
 }
 
 html, body, #root {
   height: 100%;
   margin: 0;
-  background-color: #fafaf9;
+  background-color: var(--color-canvas-dark);
+  color: var(--color-body);
   -webkit-tap-highlight-color: transparent;
 }
 

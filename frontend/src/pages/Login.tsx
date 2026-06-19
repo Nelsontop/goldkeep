@@ -26,13 +26,12 @@ export default function Login() {
     <div className="flex min-h-full flex-col items-center justify-center px-6">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <div className="mb-3 text-5xl">🏆</div>
-          <h1 className="text-2xl font-bold text-gold-800">攒金金</h1>
-          <p className="mt-1 text-sm text-stone-400">个人黄金资产管理</p>
+          <h1 className="text-2xl font-bold text-gold-400 tracking-wide">攒金金</h1>
+          <p className="mt-1 text-sm text-muted">个人黄金资产管理</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="rounded-2xl bg-white p-6 shadow-sm">
-          <label className="mb-1 block text-sm font-medium text-stone-600">
+        <form onSubmit={handleSubmit} className="rounded-xl bg-surface-card-dark p-6">
+          <label className="mb-1 block text-xs font-medium text-muted">
             登录密码
           </label>
           <input
@@ -41,15 +40,15 @@ export default function Login() {
             onChange={e => setPassword(e.target.value)}
             placeholder="请输入密码"
             autoFocus
-            className="w-full rounded-lg border border-stone-200 px-4 py-3 text-sm outline-none transition-colors focus:border-gold-400 focus:ring-1 focus:ring-gold-400"
+            className="w-full rounded-lg border border-hairline-on-dark bg-surface-card-dark px-4 py-3 text-sm text-body outline-none placeholder:text-muted focus:border-gold-400 focus:ring-1 focus:ring-gold-400"
           />
           {error && (
-            <p className="mt-2 text-xs text-red-500">{error}</p>
+            <p className="mt-2 text-xs text-trading-down">{error}</p>
           )}
           <button
             type="submit"
             disabled={loading || !password}
-            className="mt-4 w-full rounded-lg bg-gold-500 py-3 text-sm font-semibold text-white transition-colors active:bg-gold-600 disabled:opacity-50"
+            className="mt-4 w-full rounded-md bg-gold-400 py-3 text-sm font-semibold text-on-primary transition-colors active:bg-gold-500 disabled:opacity-50"
           >
             {loading ? '登录中...' : '登录'}
           </button>

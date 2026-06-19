@@ -13,8 +13,8 @@ export default defineConfig({
         name: '攒金金',
         short_name: '攒金金',
         description: '个人黄金资产管理',
-        theme_color: '#f59e0b',
-        background_color: '#fafaf9',
+        theme_color: '#0b0e11',
+        background_color: '#0b0e11',
         display: 'standalone',
         orientation: 'portrait',
         icons: [

@@ -34,34 +34,36 @@ export default function Settings() {
     navigate('/login')
   }
 
+  const inputClass = 'w-full rounded-lg border border-hairline-on-dark bg-surface-card-dark px-3 py-2.5 text-sm text-body outline-none placeholder:text-muted focus:border-gold-400 focus:ring-1 focus:ring-gold-400'
+
   return (
     <div className="space-y-4 px-4 py-4">
-      <h2 className="text-lg font-semibold text-stone-800">设置</h2>
+      <h2 className="text-lg font-semibold text-body">设置</h2>
 
       {/* Change password */}
-      <form onSubmit={handleChangePassword} className="rounded-xl bg-white p-4 shadow-sm space-y-3">
-        <h3 className="text-sm font-medium text-stone-600">修改密码</h3>
+      <form onSubmit={handleChangePassword} className="rounded-xl bg-surface-card-dark p-4 space-y-3">
+        <h3 className="text-sm font-medium text-body">修改密码</h3>
         <input
           type="password"
           value={newPassword}
           onChange={e => setNewPassword(e.target.value)}
           placeholder="新密码（至少4位）"
-          className="w-full rounded-lg border border-stone-200 px-3 py-2.5 text-sm outline-none focus:border-gold-400 focus:ring-1 focus:ring-gold-400"
+          className={inputClass}
         />
         <input
           type="password"
           value={confirmPassword}
           onChange={e => setConfirmPassword(e.target.value)}
           placeholder="确认新密码"
-          className="w-full rounded-lg border border-stone-200 px-3 py-2.5 text-sm outline-none focus:border-gold-400 focus:ring-1 focus:ring-gold-400"
+          className={inputClass}
         />
         {msg && (
-          <p className={`text-xs ${msg.includes('成功') ? 'text-green-600' : 'text-red-500'}`}>{msg}</p>
+          <p className={`text-xs ${msg.includes('成功') ? 'text-trading-up' : 'text-trading-down'}`}>{msg}</p>
         )}
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-lg bg-gold-500 py-2.5 text-sm font-medium text-white active:bg-gold-600 disabled:opacity-50"
+          className="w-full rounded-md bg-gold-400 py-2.5 text-sm font-medium text-on-primary active:bg-gold-500 disabled:opacity-50"
         >
           {loading ? '保存中...' : '修改密码'}
         </button>
@@ -70,7 +72,7 @@ export default function Settings() {
       {/* Logout */}
       <button
         onClick={handleLogout}
-        className="w-full rounded-xl bg-stone-100 py-3 text-sm font-medium text-stone-600 active:bg-stone-200"
+        className="w-full rounded-xl bg-surface-card-dark py-3 text-sm font-medium text-muted active:bg-surface-elevated-dark"
       >
         退出登录
       </button>
