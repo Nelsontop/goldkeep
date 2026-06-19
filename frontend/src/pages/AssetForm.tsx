@@ -60,8 +60,9 @@ export default function AssetForm() {
       const path = await promise
       setPhotoPath(path)
       setUploadStatus('idle')
-    } catch {
+    } catch (err) {
       setUploadStatus('failed')
+      setError(err instanceof Error ? err.message : '图片上传失败')
     }
   }
 
