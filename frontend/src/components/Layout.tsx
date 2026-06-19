@@ -1,7 +1,16 @@
 import { Outlet, NavLink, useLocation } from 'react-router-dom'
 
+function GoldBarIcon({ active }: { active: boolean }) {
+  return (
+    <svg viewBox="0 0 24 24" className="size-6">
+      <rect x="3" y="5" width="18" height="14" rx="2" fill={active ? '#f59e0b' : '#d6d3d1'} stroke={active ? '#b45309' : '#a8a29e'} strokeWidth="1" />
+      <rect x="6" y="8" width="12" height="2" rx="0.5" fill={active ? '#fde68a' : '#e7e5e4'} opacity={active ? 0.5 : 0.4} />
+    </svg>
+  )
+}
+
 const tabs = [
-  { to: '/', label: '资产', icon: '□' },
+  { to: '/', label: '资产' },
   { to: '/trend', label: '走势', icon: '📈' },
   { to: '/settings', label: '设置', icon: '⚙' },
 ]
@@ -34,8 +43,16 @@ export default function Layout() {
                 }`
               }
             >
-              <span className="text-xl">{t.icon}</span>
-              <span>{t.label}</span>
+              {({ isActive }) => (
+                <>
+                  {t.to === '/' ? (
+                    <GoldBarIcon active={isActive} />
+                  ) : (
+                    <span className="text-xl">{t.icon}</span>
+                  )}
+                  <span>{t.label}</span>
+                </>
+              )}
             </NavLink>
           ))}
         </nav>

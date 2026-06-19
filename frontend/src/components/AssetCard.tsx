@@ -25,7 +25,10 @@ export default function AssetCard({ asset, latestPrice, filter = 'all' }: { asse
         {asset.photo ? (
           <img src={asset.photo} alt="" className="size-14 rounded-lg object-cover" />
         ) : (
-          '🏆'
+          <svg viewBox="0 0 24 24" className="size-7">
+  <rect x="3" y="5" width="18" height="14" rx="2" fill="#f59e0b" stroke="#b45309" strokeWidth="1" />
+  <rect x="6" y="8" width="12" height="2" rx="0.5" fill="#fde68a" opacity="0.5" />
+</svg>
         )}
       </div>
 
