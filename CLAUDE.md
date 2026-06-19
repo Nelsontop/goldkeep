@@ -30,6 +30,15 @@ npm run lint       # eslint (TypeScript + React hooks rules)
 
 No test suite exists yet.
 
+**IMPORTANT:** 修改前端代码后，如果 Docker 容器已在运行，必须重建镜像才能看到变更：
+```bash
+docker compose build frontend && docker compose up -d frontend
+```
+修改后端代码同理：
+```bash
+docker compose build backend && docker compose up -d backend
+```
+
 ## Architecture
 
 Single-user gold asset tracker. SPA frontend + FastAPI backend + SQLite.

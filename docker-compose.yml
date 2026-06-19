@@ -2,10 +2,10 @@ services:
   backend:
     build: ./backend
     ports:
-      - "8000:8000"
+      - "19091:8000"
     volumes:
-      - goldkeep_data:/app/data
-      - goldkeep_uploads:/app/uploads
+      - ./backend/goldkeep.db:/app/data/goldkeep.db
+      - ./backend/uploads:/app/uploads
     environment:
       - DATABASE_URL=sqlite:////app/data/goldkeep.db
       - UPLOAD_DIR=/app/uploads
@@ -15,11 +15,9 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - "80:80"
+      - "19090:80"
     depends_on:
       - backend
     restart: unless-stopped
 
-volumes:
-  goldkeep_data:
-  goldkeep_uploads:
+
