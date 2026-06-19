@@ -46,6 +46,7 @@ def create_asset(
     purchase_price: float = Form(...),
     purchase_date: str = Form(...),
     notes: str = Form(''),
+    location: str = Form('深圳市'),
     photo: UploadFile | None = File(None),
     photo_path: str | None = Form(None),
     db: Session = Depends(get_db),
@@ -65,6 +66,7 @@ def create_asset(
         purchase_date=purchase_date,
         photo=photo_path,
         notes=notes,
+        location=location,
     )
     db.add(asset)
     db.commit()
@@ -82,6 +84,7 @@ def update_asset(
     purchase_price: float = Form(None),
     purchase_date: str = Form(None),
     notes: str = Form(None),
+    location: str = Form(None),
     photo: UploadFile | None = File(None),
     photo_path: str | None = Form(None),
     db: Session = Depends(get_db),
@@ -95,6 +98,7 @@ def update_asset(
             'name': name, 'classification': classification, 'subtype': subtype,
             'weight': weight, 'purchase_price_per_gram': purchase_price_per_gram,
             'purchase_price': purchase_price, 'purchase_date': purchase_date, 'notes': notes,
+            'location': location,
         }.items() if v is not None
     }
     for k, v in update_data.items():

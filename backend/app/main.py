@@ -31,6 +31,13 @@ FRONTEND_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.p
 
 Base.metadata.create_all(bind=engine)
 
+# Migration: add location column to existing assets
+with engine.connect() as conn:
+    cols = [row[1] for row in conn.exec_driver_sql("PRAGMA table_info('gold_assets');").fetchall()]
+    if 'location' not in cols:
+        conn.exec_driver_sql("ALTER TABLE gold_assets ADD COLUMN location VARCHAR NOT NULL DEFAULT '深圳市';")
+        conn.commit()
+
 db = SessionLocal()
 try:
     seed(db)

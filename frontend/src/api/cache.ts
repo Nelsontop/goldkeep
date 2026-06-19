@@ -12,6 +12,7 @@ export interface AssetItem {
   purchase_date: string
   photo: string | null
   notes: string
+  location: string
   created_at: string
 }
 

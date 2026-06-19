@@ -14,6 +14,12 @@ const filterItems = [
   { value: 'gold_bar', label: '金条' },
 ]
 
+const locationItems = [
+  { value: 'all', label: '全部地点' },
+  { value: '深圳市', label: '深圳市' },
+  { value: '汕头市', label: '汕头市' },
+]
+
 const sortDims: { key: SortKey; label: string }[] = [
   { key: 'profit', label: '持有收益' },
   { key: 'purchase_price', label: '买入总价' },
@@ -25,7 +31,7 @@ function getProfit(a: AssetItem, latestPrice: number) {
   return a.weight * (latestPrice - a.purchase_price_per_gram)
 }
 
-function FilterDropdown({ value, onChange }: { value: FilterKey; onChange: (v: FilterKey) => void }) {
+function FilterDropdown({ items, value, onChange }: { items: { value: string; label: string }[]; value: string; onChange: (v: string) => void }) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
 
@@ -38,7 +44,7 @@ function FilterDropdown({ value, onChange }: { value: FilterKey; onChange: (v: F
     return () => document.removeEventListener('mousedown', handler)
   }, [open])
 
-  const currentLabel = filterItems.find(i => i.value === value)!.label
+  const currentLabel = items.find(i => i.value === value)?.label ?? value
 
   return (
     <div ref={ref} className="relative">
@@ -53,10 +59,10 @@ function FilterDropdown({ value, onChange }: { value: FilterKey; onChange: (v: F
       </button>
       {open && (
         <div className="absolute top-full left-0 mt-1 z-30 min-w-full rounded-xl bg-surface-card-dark py-1.5 ring-1 ring-hairline-on-dark">
-          {filterItems.map(item => (
+          {items.map(item => (
             <button
               key={item.value}
-              onClick={() => { onChange(item.value as FilterKey); setOpen(false) }}
+              onClick={() => { onChange(item.value); setOpen(false) }}
               className={`block w-full whitespace-nowrap px-4 py-2 text-left text-xs transition-colors ${
                 item.value === value
                   ? 'bg-gold-400/10 text-gold-400 font-medium'
@@ -155,15 +161,20 @@ function SortDropdown({
 
 export default function Dashboard() {
   const [filter, setFilter] = useState<FilterKey>('all')
+  const [locFilter, setLocFilter] = useState('all')
   const [sortBy, setSortBy] = useState<SortKey>('profit')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
   const { assets: allAssets, loading } = useAssets()
   const { latestPrice } = useLatestPrice()
 
   const filteredAssets = useMemo(() => {
-    const filtered = filter === 'all'
+    let filtered = filter === 'all'
       ? allAssets
       : allAssets.filter(a => a.classification === filter)
+
+    if (locFilter !== 'all') {
+      filtered = filtered.filter(a => (a.location || '深圳市') === locFilter)
+    }
 
     return [...filtered].sort((a, b) => {
       let va: number, vb: number
@@ -189,7 +200,7 @@ export default function Dashboard() {
       }
       return sortDir === 'desc' ? vb - va : va - vb
     })
-  }, [allAssets, filter, sortBy, sortDir, latestPrice])
+  }, [allAssets, filter, locFilter, sortBy, sortDir, latestPrice])
 
   return (
     <div className="space-y-4 px-4 py-4">
@@ -197,7 +208,8 @@ export default function Dashboard() {
 
       {/* Filter + Sort row */}
       <div className="flex gap-2">
-        <FilterDropdown value={filter} onChange={v => setFilter(v)} />
+        <FilterDropdown items={filterItems} value={filter} onChange={v => setFilter(v as FilterKey)} />
+        <FilterDropdown items={locationItems} value={locFilter} onChange={v => setLocFilter(v)} />
         <SortDropdown sortBy={sortBy} sortDir={sortDir} onSortBy={setSortBy} onSortDir={setSortDir} />
       </div>
 

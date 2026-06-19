@@ -20,6 +20,7 @@ export default function AssetForm() {
   const [lastEdited, setLastEdited] = useState<'perGram' | 'total'>('perGram')
   const [purchaseDate, setPurchaseDate] = useState(() => new Date().toISOString().slice(0, 10))
   const [notes, setNotes] = useState('')
+  const [location, setLocation] = useState('深圳市')
   const [photo, setPhoto] = useState<File | null>(null)
   const [photoPath, setPhotoPath] = useState<string | null>(null)
   const [existingPhoto, setExistingPhoto] = useState<string | null>(null)
@@ -43,6 +44,7 @@ export default function AssetForm() {
       setLastEdited('perGram')
       setPurchaseDate(a.purchase_date)
       setNotes(a.notes)
+      setLocation(a.location || '深圳市')
       setExistingPhoto(a.photo)
       setPhotoPath(a.photo)
     })
@@ -90,6 +92,7 @@ export default function AssetForm() {
       form.append('purchase_price', String(Number(purchasePrice)))
       form.append('purchase_date', purchaseDate)
       form.append('notes', notes)
+      form.append('location', location)
       if (finalPhotoPath) {
         form.append('photo_path', finalPhotoPath)
       } else if (photo) {
@@ -296,6 +299,26 @@ export default function AssetForm() {
               rows={2}
               className={`${inputClass} resize-none`}
             />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-xs font-medium text-muted">存放地点</label>
+            <div className="flex gap-2">
+              {(['深圳市', '汕头市'] as const).map(city => (
+                <button
+                  key={city}
+                  type="button"
+                  onClick={() => setLocation(city)}
+                  className={`flex-1 rounded-lg py-2.5 text-sm font-medium transition-colors ${
+                    location === city
+                      ? 'bg-gold-400 text-on-primary'
+                      : 'bg-surface-elevated-dark text-muted'
+                  }`}
+                >
+                  {city}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 

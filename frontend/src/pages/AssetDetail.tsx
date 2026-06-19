@@ -111,6 +111,10 @@ export default function AssetDetail() {
             <p className="font-semibold text-body">{asset.purchase_date}</p>
           </div>
           <div>
+            <span className="text-muted">存放地点</span>
+            <p className="font-semibold text-body">{asset.location || '深圳市'}</p>
+          </div>
+          <div>
             <span className="text-muted">持有价值</span>
             <p className="font-semibold text-gold-400">
               ¥{holdingValue.toLocaleString('zh-CN', { maximumFractionDigits: 0 })}

@@ -19,6 +19,7 @@ class GoldAsset(Base):
     purchase_date = Column(String, nullable=False)
     photo = Column(String, nullable=True)
     notes = Column(String, nullable=True, default='')
+    location = Column(String, nullable=False, default='深圳市')
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
 class GoldPrice(Base):

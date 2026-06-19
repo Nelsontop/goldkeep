@@ -17,6 +17,7 @@ class AssetCreate(BaseModel):
     purchase_price: float
     purchase_date: str
     notes: str = ''
+    location: str = '深圳市'
 
 class AssetUpdate(BaseModel):
     name: Optional[str] = None
@@ -27,6 +28,7 @@ class AssetUpdate(BaseModel):
     purchase_price: Optional[float] = None
     purchase_date: Optional[str] = None
     notes: Optional[str] = None
+    location: Optional[str] = None
 
 class AssetResponse(BaseModel):
     id: int
@@ -39,6 +41,7 @@ class AssetResponse(BaseModel):
     purchase_date: str
     photo: Optional[str]
     notes: str = ''
+    location: str = '深圳市'
     created_at: datetime
 
     model_config = {'from_attributes': True}
