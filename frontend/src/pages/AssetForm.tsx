@@ -26,8 +26,7 @@ export default function AssetForm() {
   const [existingPhoto, setExistingPhoto] = useState<string | null>(null)
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'failed'>('idle')
   const [submitting, setSubmitting] = useState(false)
-  const [saveSuccess, setSaveSuccess] = useState(false)
-  const [error, setError] = useState('')
+  const [toast, setToast] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   const w = Number(weight)
   const ppg = Number(purchasePricePerGram)
@@ -55,16 +54,14 @@ export default function AssetForm() {
     setPhoto(file)
     setPhotoPath(null)
     setUploadStatus('uploading')
-    setError('')
     const promise = uploadPhoto(file)
     uploadPromiseRef.current = promise
     try {
       const path = await promise
       setPhotoPath(path)
       setUploadStatus('idle')
-    } catch (err) {
+    } catch {
       setUploadStatus('failed')
-      setError(err instanceof Error ? err.message : '图片上传失败')
     }
   }
 
@@ -104,21 +101,17 @@ export default function AssetForm() {
       } else {
         await createAsset(form)
       }
-      setSaveSuccess(true)
-      setTimeout(() => navigate('/'), 800)
+      setToast({ type: 'success', text: '保存成功' })
+      setTimeout(() => navigate('/'), 1500)
     } catch (err) {
       setSubmitting(false)
-      setError(err instanceof Error ? err.message : '保存失败')
+      setToast({ type: 'error', text: err instanceof Error ? err.message : '保存失败' })
     }
   }
 
   const photoSrc = photo
     ? URL.createObjectURL(photo)
     : photoPath || existingPhoto
-
-  let photoOverlay: string | null = null
-  if (uploadStatus === 'uploading') photoOverlay = 'animate-pulse bg-white/10'
-  if (uploadStatus === 'failed') photoOverlay = 'bg-trading-down/30'
 
   const inputClass = 'w-full rounded-lg border border-hairline-on-dark bg-surface-card-dark px-3 py-2.5 text-sm text-body outline-none placeholder:text-muted focus:border-gold-400 focus:ring-1 focus:ring-gold-400'
 
@@ -134,23 +127,45 @@ export default function AssetForm() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Photo */}
         <div
-          className="flex flex-col items-center gap-2 rounded-xl bg-surface-card-dark p-6 active:bg-surface-elevated-dark"
+          className="flex items-center gap-4 rounded-xl bg-surface-card-dark p-4 active:bg-surface-elevated-dark"
           onClick={() => fileInputRef.current?.click()}
         >
-          {photoSrc ? (
-            <div className="relative flex size-20 items-center justify-center rounded-xl bg-gold-100/10 text-3xl overflow-hidden">
-              <img src={photoSrc} alt="" className="size-20 rounded-xl object-cover ring-1 ring-hairline-on-dark" />
-              {photoOverlay && (
-                <div className={`absolute inset-0 ${photoOverlay}`} />
-              )}
-            </div>
-          ) : (
-            <div className="flex size-20 items-center justify-center rounded-xl bg-gold-100/10 text-3xl">📷</div>
-          )}
-          <p className="text-xs text-muted">
-            {!photoSrc ? '点击上传图片' : '点击更换图片'}
-          </p>
+          <div className="relative flex size-14 shrink-0 items-center justify-center rounded-full bg-gold-100/10 overflow-hidden">
+            {photoSrc ? (
+              <img src={photoSrc} alt="" className="size-14 object-cover" />
+            ) : (
+              <svg viewBox="0 0 24 24" className="size-6 text-muted" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                <circle cx="12" cy="13" r="4" />
+              </svg>
+            )}
+            {uploadStatus === 'uploading' && (
+              <div className="absolute inset-0 flex items-center justify-center bg-canvas-dark/60">
+                <div className="size-4 animate-spin rounded-full border-2 border-gold-400 border-t-transparent" />
+              </div>
+            )}
+            {uploadStatus === 'failed' && (
+              <div className="absolute inset-0 flex items-center justify-center bg-trading-down/30">
+                <svg viewBox="0 0 24 24" className="size-5 text-trading-down" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10" /><path d="M15 9l-6 6M9 9l6 6" />
+                </svg>
+              </div>
+            )}
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm text-body">
+              {uploadStatus === 'failed'
+                ? '上传失败，点击重试'
+                : photoSrc
+                  ? '点击更换图片'
+                  : '点击上传实物照片'}
+            </p>
+            <p className="mt-1 text-xs text-muted">
+              {uploadStatus === 'uploading' ? '上传中...' : '支持 JPG/PNG，最大 10MB'}
+            </p>
+          </div>
           <input
             ref={fileInputRef}
             type="file"
@@ -160,7 +175,10 @@ export default function AssetForm() {
           />
         </div>
 
+        {/* Section 1: 基础信息 */}
         <div className="rounded-xl bg-surface-card-dark p-4 space-y-4">
+          <h3 className="text-sm font-semibold text-muted">基础信息</h3>
+
           <div>
             <label className="mb-1 block text-xs font-medium text-muted">名称</label>
             <input
@@ -222,37 +240,43 @@ export default function AssetForm() {
               </div>
             </div>
           )}
+        </div>
 
-          <div>
-            <label className="mb-1 block text-xs font-medium text-muted">克重 (g)</label>
-            <input
-              type="number"
-              step="0.01"
-              min="0"
-              value={weight}
-              onChange={e => setWeight(e.target.value)}
-              placeholder="0.00"
-              required
-              className={inputClass}
-            />
-          </div>
+        {/* Section 2: 价格信息 */}
+        <div className="rounded-xl bg-surface-card-dark p-4 space-y-4">
+          <h3 className="text-sm font-semibold text-muted">价格信息</h3>
 
-          <div>
-            <label className="mb-1 block text-xs font-medium text-muted">下单克价 (¥/g)</label>
-            <input
-              type="number"
-              step="0.01"
-              min="0"
-              value={purchasePricePerGram}
-              onChange={e => {
-                setPurchasePricePerGram(e.target.value)
-                setLastEdited('perGram')
-                if (w > 0) setPurchasePrice(String(Math.ceil(Number(e.target.value) * w)))
-              }}
-              placeholder="0.00"
-              required
-              className={inputClass}
-            />
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="mb-1 block text-xs font-medium text-muted">克重 (g)</label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                value={weight}
+                onChange={e => setWeight(e.target.value)}
+                placeholder="0.00"
+                required
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-medium text-muted">下单克价 (¥/g)</label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                value={purchasePricePerGram}
+                onChange={e => {
+                  setPurchasePricePerGram(e.target.value)
+                  setLastEdited('perGram')
+                  if (w > 0) setPurchasePrice(String(Math.ceil(Number(e.target.value) * w)))
+                }}
+                placeholder="0.00"
+                required
+                className={inputClass}
+              />
+            </div>
           </div>
 
           <div>
@@ -271,23 +295,48 @@ export default function AssetForm() {
               required
               className={inputClass}
             />
+            {w > 0 && ppg > 0 && (
+              <p className="mt-1.5 text-xs text-muted">
+                {lastEdited === 'perGram' ? '已根据克价自动计算总价' : '已根据总价自动计算克价'}
+              </p>
+            )}
           </div>
+        </div>
 
-          {w > 0 && ppg > 0 && (
-            <div className="rounded-lg bg-gold-400/10 p-3 text-center text-xs text-muted">
-              {lastEdited === 'perGram' ? '已根据克价自动计算总价' : '已根据总价自动计算克价'}
+        {/* Section 3: 其他信息 */}
+        <div className="rounded-xl bg-surface-card-dark p-4 space-y-4">
+          <h3 className="text-sm font-semibold text-muted">其他信息</h3>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="mb-1 block text-xs font-medium text-muted">买入日期</label>
+              <input
+                type="date"
+                value={purchaseDate}
+                onChange={e => setPurchaseDate(e.target.value)}
+                required
+                className={inputClass}
+              />
             </div>
-          )}
-
-          <div>
-            <label className="mb-1 block text-xs font-medium text-muted">买入日期</label>
-            <input
-              type="date"
-              value={purchaseDate}
-              onChange={e => setPurchaseDate(e.target.value)}
-              required
-              className={inputClass}
-            />
+            <div>
+              <label className="mb-1 block text-xs font-medium text-muted">存放地点</label>
+              <div className="flex gap-1 rounded-lg bg-surface-elevated-dark p-1">
+                {(['深圳市', '汕头市'] as const).map(city => (
+                  <button
+                    key={city}
+                    type="button"
+                    onClick={() => setLocation(city)}
+                    className={`flex-1 rounded-md py-2 text-xs font-medium transition-colors ${
+                      location === city
+                        ? 'bg-gold-400 text-on-primary'
+                        : 'text-muted'
+                    }`}
+                  >
+                    {city}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
 
           <div>
@@ -300,41 +349,29 @@ export default function AssetForm() {
               className={`${inputClass} resize-none`}
             />
           </div>
-
-          <div>
-            <label className="mb-1 block text-xs font-medium text-muted">存放地点</label>
-            <div className="flex gap-2">
-              {(['深圳市', '汕头市'] as const).map(city => (
-                <button
-                  key={city}
-                  type="button"
-                  onClick={() => setLocation(city)}
-                  className={`flex-1 rounded-lg py-2.5 text-sm font-medium transition-colors ${
-                    location === city
-                      ? 'bg-gold-400 text-on-primary'
-                      : 'bg-surface-elevated-dark text-muted'
-                  }`}
-                >
-                  {city}
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
 
-        {error && (
-          <p className="rounded-lg bg-trading-down/10 px-3 py-2 text-center text-xs text-trading-down">{error}</p>
-        )}
         <button
           type="submit"
-          disabled={submitting || saveSuccess}
-          className={`w-full rounded-md py-3 text-sm font-semibold transition-colors disabled:opacity-50 ${
-            saveSuccess ? 'bg-trading-up text-on-dark' : 'bg-gold-400 text-on-primary active:bg-gold-500'
-          }`}
+          disabled={submitting}
+          className="w-full rounded-md bg-gold-400 py-3 text-sm font-semibold text-on-primary transition-colors active:bg-gold-500 disabled:opacity-50"
         >
-          {saveSuccess ? '✓ 保存成功' : submitting ? '保存中...' : isEdit ? '保存修改' : '添加资产'}
+          {submitting ? '保存中...' : isEdit ? '保存修改' : '添加资产'}
         </button>
       </form>
+
+      {/* Toast */}
+      {toast && (
+        <div
+          className={`fixed bottom-24 left-1/2 z-50 -translate-x-1/2 rounded-lg px-4 py-2.5 text-sm font-medium shadow-lg ${
+            toast.type === 'success'
+              ? 'bg-trading-up text-on-dark'
+              : 'bg-trading-down text-on-dark'
+          }`}
+        >
+          {toast.text}
+        </div>
+      )}
     </div>
   )
 }
